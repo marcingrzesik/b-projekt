@@ -30,3 +30,7 @@ Obecna domena i hosting pozostają w ChatGPT Sites; strona (`public/`) jest przy
 Źródło migracji: commit `e8aaf57e9ca8ce5e0eecec18c0eaf1e90f1be44f` z repozytorium ChatGPT Sites. Migracja przenosi bieżące pliki; wcześniejsza historia pozostaje w repozytorium źródłowym.
 
 Zdjęcia i materiały firmowe należą do ich właścicieli. Publiczny dostęp do kodu nie oznacza zgody na wykorzystywanie materiałów B-Projekt w innych projektach.
+
+## Wdrożenie na Cloudflare (docelowo)
+
+Formularz działa w Workerze, więc strona musi być wdrożona jako Worker, a nie jako czysty statyczny Pages: build `npm run build`, deploy `npx wrangler deploy` (Workers Builds połączone z repozytorium, gałąź `main`). Sekret: `CONTACT_RECIPIENT=kontakt@b-projekt.pl`. Domena `b-projekt.pl` jako Custom Domain Workera.

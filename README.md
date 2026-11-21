@@ -34,3 +34,7 @@ Zdjęcia i materiały firmowe należą do ich właścicieli. Publiczny dostęp d
 ## Wdrożenie na Cloudflare (docelowo)
 
 Formularz działa w Workerze, więc strona musi być wdrożona jako Worker, a nie jako czysty statyczny Pages: build `npm run build`, deploy `npx wrangler deploy` (Workers Builds połączone z repozytorium, gałąź `main`). Sekret: `CONTACT_RECIPIENT=kontakt@b-projekt.pl`. Domena `b-projekt.pl` jako Custom Domain Workera.
+
+## Publikacja na GitHub Pages (statycznie)
+
+Workflow `.github/workflows/pages.yml` publikuje katalog `public/` po każdym zapisie w `main`. W ustawieniach repo: Settings → Pages → Source: GitHub Actions. Plik `public/CNAME` zawiera domenę `b-projekt.pl`. Na hostingu statycznym formularz wysyła dane bezpośrednio przez FormSubmit na kontakt@b-projekt.pl (pierwsze zgłoszenie wymaga aktywacji adresu mailem). Uwaga: GitHub Pages dla prywatnych repozytoriów wymaga płatnego planu GitHub.

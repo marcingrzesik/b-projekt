@@ -32,12 +32,32 @@
     var btn=f.querySelector('button[type="submit"]');
     btn.disabled=true; btn.textContent='Wysyłanie…'; st.hidden=true;
     try{
+      var data=Object.fromEntries(new FormData(f));
       var res=await fetch('/api/contact',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(Object.fromEntries(new FormData(f))),
+        body:JSON.stringify(data),
         signal:AbortSignal.timeout(20000)
       });
+      if(res.status===404||res.status===405){
+        // Hosting statyczny (np. GitHub Pages): wysyłka bezpośrednio przez FormSubmit.
+        if(data.website){ st.textContent='Zapytanie przyjęte do wysyłki. Dziękujemy!'; st.classList.remove('error'); f.reset(); return; }
+        delete data.website;
+        data._subject='Zapytanie ze strony B-Projekt: '+(data.service||'');
+        data._template='table'; data._captcha='false';
+        res=await fetch('https://formsubmit.co/ajax/kontakt@b-projekt.pl',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Accept':'application/json'},
+          body:JSON.stringify(data),
+          signal:AbortSignal.timeout(20000)
+        });
+        var fb=await res.json().catch(function(){return {};});
+        var ok=res.ok&&String(fb.success)==='true';
+        st.textContent=ok?'Zapytanie przyjęte do wysyłki. Dziękujemy!':'Formularz jest chwilowo niedostępny. Zadzwoń: 512 760 117.';
+        st.classList.toggle('error',!ok);
+        if(ok) f.reset();
+        return;
+      }
       var body=await res.json();
       st.textContent=body.message||'Nie udało się wysłać zapytania.';
       st.classList.toggle('error',!res.ok);
